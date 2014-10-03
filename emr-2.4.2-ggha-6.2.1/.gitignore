@@ -1,0 +1,17 @@
+# Defaults from https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# Tessera-specific
+/credentials.json
+/*.pem
+/*.*~
