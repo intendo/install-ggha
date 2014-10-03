@@ -1,0 +1,7 @@
+# Put all necessary private information in this file
+EMR_CLI_HOME=
+INSTANCE_NAME=
+S3_BUCKET=
+
+# Location of .pem file without the .pem extension (e.g. /some/folder/MyKeyPair)
+KEY_PAIR=
