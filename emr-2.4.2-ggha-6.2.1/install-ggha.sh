@@ -16,7 +16,7 @@
 echo "This script is executing as user $USER"
 
 echo "Setting the GRIDGAIN_BASE environment variable"
-GRIDGAIN_BASE=/opt/ggha
+export GRIDGAIN_BASE=/opt/ggha
 
 echo "GRIDGAIN_BASE=$GRIDGAIN_BASE"
 
@@ -26,15 +26,15 @@ cd $GRIDGAIN_BASE
 sudo chown hadoop:hadoop $GRIDGAIN_BASE
 
 echo "Downloading GGHA ZIP files from S3"
-ZIP_FILENAME=gridgain-hadoop-os-6.5.0
+export ZIP_FILENAME=gridgain-hadoop-os-6.5.0
 curl -O https://s3.amazonaws.com/velocity-gridgain/$ZIP_FILENAME.zip
 
 echo "Decompressing ZIP to $GRIDGAIN_BASE"
 unzip $ZIP_FILENAME.zip
 cd $ZIP_FILENAME
 
-echo "Setting GRIDGAIN_HOME to $GRIDGAIN_BASE/$ZIP_FILENAME
-GRIDGAIN_HOME=$GRIDGAIN_BASE/$ZIP_FILENAME
+echo "Setting GRIDGAIN_HOME to $GRIDGAIN_BASE/$ZIP_FILENAME"
+export GRIDGAIN_HOME=$GRIDGAIN_BASE/$ZIP_FILENAME
 
 echo "Configuring Hadoop to use GGFS"
 
@@ -50,9 +50,11 @@ echo "Configuring Hadoop to use GGFS"
 
 # When this script is bootstrapped HADOOP_HOME is apparently not set yet
 echo "Setting the HADOOP_HOME environment variable"
-HADOOP_HOME=/home/hadoop
+export HADOOP_HOME=/home/hadoop
+export HADOOP_COMMON_HOME=$HADOOP_HOME
 
 echo "HADOOP_HOME=$HADOOP_HOME"
+echo "HADOOP_COMMON_HOME=$HADOOP_COMMON_HOME"
 
 # Hadoop 1.x configuration
 cd $HADOOP_HOME
@@ -75,12 +77,12 @@ sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPAT
 
 # Tell Hadoop to use the new GGFS configurations
 echo "Setting the HADOOP_CONF_DIR environment variable"
-HADOOP_CONF_DIR=$HADOOP_HOME/conf-ggfs
+export HADOOP_CONF_DIR=$HADOOP_HOME/conf-ggfs
 
 echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
 
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
 echo "Starting GGFS on Hadoop nodes..."
-# . "$GRIDGAIN_HOME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/config/default-config.xml" $@
-. "$GRIDGAIN_HOME/bin/setup-hadoop.sh" $@
+$GRIDGAIN_HOME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/config/default-config.xml $@
 
+# $GRIDGAIN_HOME/bin/setup-hadoop.sh $@
