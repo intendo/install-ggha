@@ -26,7 +26,7 @@ cd $GRIDGAIN_HOME
 sudo chown hadoop:hadoop $GRIDGAIN_HOME
 
 echo "Downloading GGHA ZIP files from S3"
-ZIP_FILENAME=gridgain-hadoop-os-6.2.1-nix
+ZIP_FILENAME=gridgain-hadoop-os-6.5.0
 curl -O https://s3.amazonaws.com/velocity-gridgain/$ZIP_FILENAME.zip
 
 echo "Decompressing ZIP to $GRIDGAIN_HOME"
@@ -45,7 +45,7 @@ echo "Configuring Hadoop to use GGFS"
 # ./bin/ggstart.sh &
 # ./bin/ggvisorcmd.sh
 
-# When this script is bootstrapped HADOOP_HOME is not yet set
+# When this script is bootstrapped HADOOP_HOME is apparently not set yet
 echo "Setting the HADOOP_HOME environment variable"
 HADOOP_HOME=/home/hadoop
 
@@ -78,4 +78,6 @@ echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
 
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
 echo "Starting GGFS on Hadoop nodes..."
-$GRIDGAIN_HOME/$ZIP_FILENAME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/$ZIP_FILENAME/config/default-config.xml &
+# . "$GRIDGAIN_HOME/$ZIP_FILENAME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/$ZIP_FILENAME/config/default-config.xml" $@
+. "$GRIDGAIN_HOME/$ZIP_FILENAME/bin/setup-hadoop.sh" $@
+
