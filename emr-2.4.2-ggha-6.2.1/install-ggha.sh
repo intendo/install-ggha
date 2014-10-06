@@ -83,6 +83,6 @@ echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
 
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
 echo "Starting GGFS on Hadoop nodes..."
-$GRIDGAIN_HOME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/config/default-config.xml $@
+yes | $GRIDGAIN_HOME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/config/default-config.xml $@
 
 # $GRIDGAIN_HOME/bin/setup-hadoop.sh $@
