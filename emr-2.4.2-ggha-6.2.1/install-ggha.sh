@@ -15,11 +15,12 @@
 
 echo "This script is executing as user $USER"
 
-echo "Setting the GRIDGAIN_HOME environment variables"
+echo "Setting the GRIDGAIN_HOME environment variable"
 GRIDGAIN_HOME=/opt/ggha
+
 echo "GRIDGAIN_HOME=$GRIDGAIN_HOME"
 
-echo "Creating a local directory to put the GridGain Hadoop Accelerator (GGHA) files"
+echo "Creating $GRIDGAIN_HOME to store the GridGain Hadoop Accelerator (GGHA) files"
 sudo mkdir $GRIDGAIN_HOME
 cd $GRIDGAIN_HOME
 sudo chown hadoop:hadoop $GRIDGAIN_HOME
@@ -28,7 +29,7 @@ echo "Downloading GGHA ZIP files from S3"
 ZIP_FILENAME=gridgain-hadoop-os-6.2.1-nix
 curl -O https://s3.amazonaws.com/velocity-gridgain/$ZIP_FILENAME.zip
 
-echo "Decompressing ZIP to local directory"
+echo "Decompressing ZIP to $GRIDGAIN_HOME"
 unzip $ZIP_FILENAME.zip
 cd $ZIP_FILENAME
 
@@ -44,23 +45,37 @@ echo "Configuring Hadoop to use GGFS"
 # ./bin/ggstart.sh &
 # ./bin/ggvisorcmd.sh
 
+# When this script is bootstrapped HADOOP_HOME is not yet set
+echo "Setting the HADOOP_HOME environment variable"
+HADOOP_HOME=/home/hadoop
+
+echo "HADOOP_HOME=$HADOOP_HOME"
+
 # Hadoop 1.x configuration
 cd $HADOOP_HOME
+
+echo "Copying $HADOOP_HOME/conf to $HADOOP_HOME/conf-ggfs"
 cp -r conf conf-ggfs
 cd conf-ggfs
 
 # Modify core-site.xml to load GGFS by default
+echo "Modifying core-site.xml..."
 cp core-site.xml core-site.xml.bak
 
 grep -v fs.default.name core-site.xml.bak | sed -r -e "s#<configuration>#<configuration>\n <property>\n <name>fs.ggfs.impl</name><value>org.gridgain.grid.ggfs.hadoop.v1.GridGgfsHadoopFileSystem</value>\n </property>\n <property>\n <name>fs.default.name</name><value>ggfs://ggfs@localhost</value>\n  </property>\n <property>\n <name>dfs.client.block.write.replace-datanode-on-failure.policy</name><value>NEVER</value>\n  </property>\n#" > core-site.xml
 
 # Modify hadoop-env.sh to load GridGain JARs in to Hadoop classpath
+echo "Modifying hadoop-env.sh..."
 cp hadoop-env.sh hadoop-env.sh.bak
 
 sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done \n for f in \$\GRIDGAIN_HOME/libs/*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done" hadoop-env.sh
 
 # Tell Hadoop to use the new GGFS configurations
+echo "Setting the HADOOP_CONF_DIR environment variable"
 HADOOP_CONF_DIR=$HADOOP_HOME/conf-ggfs
 
+echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
+
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
-$GRIDGAIN_HOME/$ZIP_FILENAME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/$ZIP_FILENAME/config/default-config.xml
+echo "Starting GGFS on Hadoop nodes..."
+$GRIDGAIN_HOME/$ZIP_FILENAME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/$ZIP_FILENAME/config/default-config.xml &
