@@ -15,23 +15,26 @@
 
 echo "This script is executing as user $USER"
 
-echo "Setting the GRIDGAIN_HOME environment variable"
-GRIDGAIN_HOME=/opt/ggha
+echo "Setting the GRIDGAIN_BASE environment variable"
+GRIDGAIN_BASE=/opt/ggha
 
-echo "GRIDGAIN_HOME=$GRIDGAIN_HOME"
+echo "GRIDGAIN_BASE=$GRIDGAIN_BASE"
 
-echo "Creating $GRIDGAIN_HOME to store the GridGain Hadoop Accelerator (GGHA) files"
-sudo mkdir $GRIDGAIN_HOME
-cd $GRIDGAIN_HOME
-sudo chown hadoop:hadoop $GRIDGAIN_HOME
+echo "Creating $GRIDGAIN_BASE to store the GridGain Hadoop Accelerator (GGHA) files"
+sudo mkdir $GRIDGAIN_BASE
+cd $GRIDGAIN_BASE
+sudo chown hadoop:hadoop $GRIDGAIN_BASE
 
 echo "Downloading GGHA ZIP files from S3"
 ZIP_FILENAME=gridgain-hadoop-os-6.5.0
 curl -O https://s3.amazonaws.com/velocity-gridgain/$ZIP_FILENAME.zip
 
-echo "Decompressing ZIP to $GRIDGAIN_HOME"
+echo "Decompressing ZIP to $GRIDGAIN_BASE"
 unzip $ZIP_FILENAME.zip
 cd $ZIP_FILENAME
+
+echo "Setting GRIDGAIN_HOME to $GRIDGAIN_BASE/$ZIP_FILENAME
+GRIDGAIN_HOME=$GRIDGAIN_BASE/$ZIP_FILENAME
 
 echo "Configuring Hadoop to use GGFS"
 
@@ -78,6 +81,6 @@ echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
 
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
 echo "Starting GGFS on Hadoop nodes..."
-# . "$GRIDGAIN_HOME/$ZIP_FILENAME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/$ZIP_FILENAME/config/default-config.xml" $@
-. "$GRIDGAIN_HOME/$ZIP_FILENAME/bin/setup-hadoop.sh" $@
+# . "$GRIDGAIN_HOME/bin/ggstart.sh -h1 $GRIDGAIN_HOME/config/default-config.xml" $@
+. "$GRIDGAIN_HOME/bin/setup-hadoop.sh" $@
 
