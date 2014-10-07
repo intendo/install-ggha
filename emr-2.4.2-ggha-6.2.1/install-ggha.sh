@@ -87,7 +87,7 @@ echo "TODO"
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
 echo "Starting GGFS on Hadoop nodes..."
 
-nohup $GRIDGAIN_HOME/bin/ggstart.sh -h1 -v $GRIDGAIN_HOME/config/default-config.xml &
+nohup $GRIDGAIN_HOME/bin/ggstart.sh -h1 -v $GRIDGAIN_HOME/config/default-config.xml >output 2>&1 &
 
 # Uncomment this script for Hadoop 2.x and comment out the Hadoop 1.x configuration above
 # sudo chmod 755 ./bin/setup-hadoop.sh
