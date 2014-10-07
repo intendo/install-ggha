@@ -47,7 +47,7 @@ export HADOOP=/home/hadoop
 export HADOOP_HOME=/home/hadoop/
 export HADOOP_COMMON_HOME=/home/hadoop/
 export HADOOP_CONF_DIR=/home/hadoop/conf-ggfs
-export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib
+export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib;$GRIDGAIN_HOME/libs;$GRIDGAIN_HOME/libs/gridgain-ggfs;$GRIDGAIN_HOME/libs/gridgain-hadoop;$GRIDGAIN_HOME/libs/gridgain-log4j;$GRIDGAIN_HOME/libs/gridgain-spring
 
 echo 'export HADOOP=$HADOOP'| sudo tee -a /home/hadoop/.bash_profile
 echo 'export HADOOP_HOME=$HADOOP_HOME' | sudo tee -a /home/hadoop/.bash_profile
