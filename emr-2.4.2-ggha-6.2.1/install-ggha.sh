@@ -81,10 +81,10 @@ export HADOOP_CONF_DIR=$HADOOP_HOME/conf-ggfs
 
 echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
 
-echo "Modifying GridGain to use S3 Discovery protocol instead of Multicast
-
+echo "Modifying GridGain to use S3 Discovery protocol instead of Multicast"
+echo "TODO"
 
 # Start GGFS on Hadoop 1.x job-submitter or job-client nodes
 echo "Starting GGFS on Hadoop nodes..."
-nohup $GRIDGAIN_HOME/bin/ggstart.sh -h1 -v $GRIDGAIN_HOME/config/default-config.xml &
 
+nohup $GRIDGAIN_HOME/bin/ggstart.sh -h1 -v $GRIDGAIN_HOME/config/default-config.xml &
