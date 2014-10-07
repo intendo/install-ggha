@@ -47,7 +47,7 @@ export HADOOP=/home/hadoop
 export HADOOP_HOME=/home/hadoop/
 export HADOOP_COMMON_HOME=/home/hadoop/
 export HADOOP_CONF_DIR=/home/hadoop/conf-ggfs
-export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib;$GRIDGAIN_HOME/libs;$GRIDGAIN_HOME/libs/gridgain-ggfs;$GRIDGAIN_HOME/libs/gridgain-hadoop;$GRIDGAIN_HOME/libs/gridgain-log4j;$GRIDGAIN_HOME/libs/gridgain-spring
+export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib;
 
 echo 'export HADOOP=$HADOOP'| sudo tee -a /home/hadoop/.bash_profile
 echo 'export HADOOP_HOME=$HADOOP_HOME' | sudo tee -a /home/hadoop/.bash_profile
@@ -79,6 +79,16 @@ echo "Modifying hadoop-env.sh..."
 cp hadoop-env.sh hadoop-env.sh.bak
 
 sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done \n for f in \$\GRIDGAIN_HOME/libs/*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done" hadoop-env.sh
+
+# Apparently that is not working very well
+# Try 2
+# All JARs at $GRIDGAIN_HOME/libs need to be copied to /home/hadoop/lib
+
+find $GRIDGAIN_HOME/libs -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
+find $GRIDGAIN_HOME/libs/gridgain-ggfs -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
+find $GRIDGAIN_HOME/libs/gridgain-hadoop -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
+find $GRIDGAIN_HOME/libs/gridgain-log4j -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
+find $GRIDGAIN_HOME/libs/gridgain-spring -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
 
 # Tell Hadoop to use the new GGFS configurations
 echo "Modifying GridGain to use S3 Discovery protocol instead of Multicast"
