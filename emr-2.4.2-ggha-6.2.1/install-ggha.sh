@@ -34,27 +34,32 @@ unzip $ZIP_FILENAME.zip
 cd $ZIP_FILENAME
 
 echo "Setting GRIDGAIN_HOME to $GRIDGAIN_BASE/$ZIP_FILENAME"
+
 export GRIDGAIN_HOME=$GRIDGAIN_BASE/$ZIP_FILENAME
+echo 'export GRIDGAIN_HOME=$GRIDGAIN_HOME'| sudo tee -a /home/hadoop/.bash_profile
 
 echo "Configuring Hadoop to use GGFS"
 
-# Uncomment this script for Hadoop 2.x and comment out the Hadoop 1.x configuration below
-# sudo chmod 755 ./bin/setup-hadoop.sh
-# ./bin/setup-hadoop.sh
-
-# This command is for testing GGFS standalone
-# Use GridGain Visor command-line version to verify
-# sudo chmod 755 ./bin/ggstart.sh
-# ./bin/ggstart.sh &
-# ./bin/ggvisorcmd.sh
-
 # When this script is bootstrapped HADOOP_HOME is apparently not set yet
-echo "Setting the HADOOP_HOME environment variable"
-export HADOOP_HOME=/home/hadoop
-export HADOOP_COMMON_HOME=$HADOOP_HOME
+echo "Setting Hadoop environment variables..."
 
+export HADOOP=/home/hadoop
+export HADOOP_HOME=/home/hadoop/
+export HADOOP_COMMON_HOME=/home/hadoop/
+export HADOOP_CONF_DIR=/home/hadoop/conf-ggfs
+export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib
+
+echo 'export HADOOP=$HADOOP'| sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_HOME=$HADOOP_HOME' | sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_COMMON_HOME=$HADOOP_COMMON_HOME' | sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_CONF_DIR=$HADOOP_CONF_DIR' | sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_LIBS=$HADOOP_LIBS'| sudo tee -a /home/hadoop/.bash_profile
+
+echo "HADOOP=$HADOOP"
 echo "HADOOP_HOME=$HADOOP_HOME"
 echo "HADOOP_COMMON_HOME=$HADOOP_COMMON_HOME"
+echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
+echo "HADOOP_LIBS=$HADOOP_LIBS"
 
 # Hadoop 1.x configuration
 cd $HADOOP_HOME
@@ -76,11 +81,6 @@ cp hadoop-env.sh hadoop-env.sh.bak
 sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done \n for f in \$\GRIDGAIN_HOME/libs/*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done" hadoop-env.sh
 
 # Tell Hadoop to use the new GGFS configurations
-echo "Setting the HADOOP_CONF_DIR environment variable"
-export HADOOP_CONF_DIR=$HADOOP_HOME/conf-ggfs
-
-echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
-
 echo "Modifying GridGain to use S3 Discovery protocol instead of Multicast"
 echo "TODO"
 
@@ -88,3 +88,13 @@ echo "TODO"
 echo "Starting GGFS on Hadoop nodes..."
 
 nohup $GRIDGAIN_HOME/bin/ggstart.sh -h1 -v $GRIDGAIN_HOME/config/default-config.xml &
+
+# Uncomment this script for Hadoop 2.x and comment out the Hadoop 1.x configuration above
+# sudo chmod 755 ./bin/setup-hadoop.sh
+# ./bin/setup-hadoop.sh
+
+# This command is for testing GGFS nodes
+# Use GridGain Visor command-line version to verify
+# sudo chmod 755 ./bin/ggstart.sh
+# ./bin/ggstart.sh &
+# ./bin/ggvisorcmd.sh
