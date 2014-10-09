@@ -44,10 +44,10 @@ echo "Configuring Hadoop to use GGFS"
 echo "Setting Hadoop environment variables..."
 
 export HADOOP=/home/hadoop
-export HADOOP_HOME=/home/hadoop/
-export HADOOP_COMMON_HOME=/home/hadoop/
+export HADOOP_HOME=/home/hadoop
+export HADOOP_COMMON_HOME=/home/hadoop
 export HADOOP_CONF_DIR=/home/hadoop/conf-ggfs
-export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib;
+export HADOOP_LIBS=/home/hadoop/lib;
 
 echo 'export HADOOP=$HADOOP'| sudo tee -a /home/hadoop/.bash_profile
 echo 'export HADOOP_HOME=$HADOOP_HOME' | sudo tee -a /home/hadoop/.bash_profile
@@ -83,6 +83,8 @@ sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPAT
 # Apparently that is not working very well
 # Try 2
 # All JARs at $GRIDGAIN_HOME/libs need to be copied to /home/hadoop/lib
+
+echo "Copying all GridGain JAR files to $HADOOP_LIBS"
 
 find $GRIDGAIN_HOME/libs -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
 find $GRIDGAIN_HOME/libs/gridgain-ggfs -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
