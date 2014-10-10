@@ -47,7 +47,8 @@ export HADOOP=/home/hadoop
 export HADOOP_HOME=/home/hadoop
 export HADOOP_COMMON_HOME=/home/hadoop
 export HADOOP_CONF_DIR=/home/hadoop/conf-ggfs
-export HADOOP_LIBS=/home/hadoop/lib;
+export HADOOP_LIB=/home/hadoop/lib
+export HADOOP_LIBS=$HADOOP_HOME:$HADOOP_LIB 
 
 echo 'export HADOOP=$HADOOP'| sudo tee -a /home/hadoop/.bash_profile
 echo 'export HADOOP_HOME=$HADOOP_HOME' | sudo tee -a /home/hadoop/.bash_profile
@@ -84,13 +85,13 @@ sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPAT
 # Try 2
 # All JARs at $GRIDGAIN_HOME/libs need to be copied to /home/hadoop/lib
 
-echo "Copying all GridGain JAR files to $HADOOP_LIBS"
+echo "Copying all GridGain JAR files to $$HADOOP_LIB"
 
-find $GRIDGAIN_HOME/libs -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
-find $GRIDGAIN_HOME/libs/gridgain-ggfs -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
-find $GRIDGAIN_HOME/libs/gridgain-hadoop -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
-find $GRIDGAIN_HOME/libs/gridgain-log4j -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
-find $GRIDGAIN_HOME/libs/gridgain-spring -name "*.jar" -type f -exec cp {} $HADOOP_LIBS \;
+find $GRIDGAIN_HOME/libs -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
+find $GRIDGAIN_HOME/libs/gridgain-ggfs -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
+find $GRIDGAIN_HOME/libs/gridgain-hadoop -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
+find $GRIDGAIN_HOME/libs/gridgain-log4j -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
+find $GRIDGAIN_HOME/libs/gridgain-spring -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
 
 # Tell Hadoop to use the new GGFS configurations
 echo "Modifying GridGain to use S3 Discovery protocol instead of Multicast"
