@@ -44,10 +44,10 @@ echo "Configuring Hadoop to use GGFS"
 echo "Setting Hadoop environment variables..."
 
 export HADOOP=/home/hadoop
-export HADOOP_HOME=/home/hadoop
-export HADOOP_COMMON_HOME=/home/hadoop
-export HADOOP_CONF_DIR=/home/hadoop/conf-ggfs
-export HADOOP_LIB=/home/hadoop/lib
+export HADOOP_HOME=$HADOOP
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_CONF_DIR=$HADOOP_HOME/conf-ggfs
+export HADOOP_LIB=$HADOOP_HOME/lib
 export HADOOP_LIBS=$HADOOP_HOME:$HADOOP_LIB 
 
 echo 'export HADOOP=$HADOOP'| sudo tee -a /home/hadoop/.bash_profile
@@ -75,17 +75,18 @@ cp core-site.xml core-site.xml.bak
 
 grep -v fs.default.name core-site.xml.bak | sed -r -e "s#<configuration>#<configuration>\n <property>\n <name>fs.ggfs.impl</name><value>org.gridgain.grid.ggfs.hadoop.v1.GridGgfsHadoopFileSystem</value>\n </property>\n <property>\n <name>fs.default.name</name><value>ggfs://ggfs@localhost</value>\n  </property>\n <property>\n <name>dfs.client.block.write.replace-datanode-on-failure.policy</name><value>NEVER</value>\n  </property>\n#" > core-site.xml
 
+# Try #1
 # Modify hadoop-env.sh to load GridGain JARs in to Hadoop classpath
-echo "Modifying hadoop-env.sh..."
-cp hadoop-env.sh hadoop-env.sh.bak
+# echo "Modifying hadoop-env.sh..."
+# cp hadoop-env.sh hadoop-env.sh.bak
 
-sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done \n for f in \$\GRIDGAIN_HOME/libs/*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done" hadoop-env.sh
+# sed -i "\$afor f in \$\GRIDGAIN_HOME/gridgain*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done \n for f in \$\GRIDGAIN_HOME/libs/*.jar; do \n export HADOOP_CLASSPATH=\$\HADOOP_CLASSPATH:\$f\; \n done" hadoop-env.sh
 
+# Try #2
 # Apparently that is not working very well
-# Try 2
 # All JARs at $GRIDGAIN_HOME/libs need to be copied to /home/hadoop/lib
 
-echo "Copying all GridGain JAR files to $$HADOOP_LIB"
+echo "Copying all GridGain JAR files to $HADOOP_LIB"
 
 find $GRIDGAIN_HOME/libs -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
 find $GRIDGAIN_HOME/libs/gridgain-ggfs -name "*.jar" -type f -exec cp {} $HADOOP_LIB \;
